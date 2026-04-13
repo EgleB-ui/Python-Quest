@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Quest — Data Analyst Apprentice Training</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1f2436;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.15);
+  --text: #e8eaf0;
+  --text-muted: #8892a4;
+  --text-faint: #4a5568;
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --green-border: rgba(34,197,94,0.35);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.1);
+  --red-border: rgba(248,113,113,0.3);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.1);
+  --blue-border: rgba(96,165,250,0.25);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.1);
+  --purple: #a78bfa;
+  --accent: #22c55e;
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.6;
+}
+
+/* HEADER */
+.header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:1rem;height:56px;
+}
+.logo{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:var(--accent);
+  white-space:nowrap;flex-shrink:0;
+}
+.logo span{color:var(--text-muted);font-size:13px;font-family:'DM Sans',sans-serif;margin-left:6px;}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:10px;}
+.prog-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .5s ease;}
+.prog-label{font-size:12px;color:var(--text-muted);white-space:nowrap;font-family:'DM Mono',monospace;}
+.xp-badge{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green);font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;font-family:'DM Mono',monospace;}
+
+/* LAYOUT */
+.main{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+/* CHAPTER INTRO */
+.ch-eyebrow{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--text-faint);text-transform:uppercase;margin-bottom:.4rem;
+}
+.ch-title{
+  font-family:'DM Serif Display',serif;
+  font-size:28px;color:var(--text);margin-bottom:.25rem;
+}
+.ch-meta{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.pill-green{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border);}
+.pill-blue{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border);}
+.pill-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(251,191,36,.3);}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;
+}
+.card-label{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--text-faint);text-transform:uppercase;margin-bottom:.6rem;}
+.story-text{font-size:15px;line-height:1.8;color:var(--text);}
+.story-text strong{color:var(--accent);font-weight:500;}
+.story-text em{color:var(--blue);font-style:italic;}
+
+/* EXPLAIN */
+.explain-body{font-size:14px;line-height:1.8;color:var(--text-muted);}
+.explain-body code{font-family:'DM Mono',monospace;font-size:13px;background:var(--surface2);padding:1px 5px;border-radius:4px;color:var(--purple);}
+.explain-body strong{color:var(--text);font-weight:500;}
+
+/* CODE BLOCKS */
+.jup-cell{border-radius:var(--radius);overflow:hidden;margin:.75rem 0;border:1px solid var(--border);}
+.jup-topbar{
+  background:#12151f;padding:.4rem .75rem;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text-faint);
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);
+}
+.jup-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+.code-area{background:#0d1117;padding:1rem 1.25rem;font-family:'DM Mono',monospace;font-size:13.5px;line-height:1.7;overflow-x:auto;white-space:pre;}
+.out-area{background:#070a0f;padding:.75rem 1.25rem;font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;color:#8bb5a0;border-top:1px solid var(--border);white-space:pre-wrap;}
+.out-label{font-size:10px;letter-spacing:.06em;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;}
+
+/* Syntax highlighting */
+.kw{color:#ff79c6;}.fn{color:#8be9fd;}.st{color:#f1fa8c;}.nm{color:#bd93f9;}.cm{color:#6272a4;font-style:italic;}.bi{color:#50fa7b;}.op{color:#ff79c6;}.cls{color:#8be9fd;}
+
+/* MULTIPLE CHOICE */
+.mc-q{font-size:15px;font-weight:500;color:var(--text);margin-bottom:1rem;line-height:1.6;}
+.mc-q code{font-family:'DM Mono',monospace;font-size:13px;background:var(--surface2);padding:2px 6px;border-radius:4px;color:var(--purple);}
+.choices{display:flex;flex-direction:column;gap:8px;}
+.choice-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.7rem 1rem;
+  font-size:14px;color:var(--text);cursor:pointer;text-align:left;
+  font-family:'DM Sans',sans-serif;transition:border-color .15s,background .15s;
+}
+.choice-btn:hover:not(:disabled){border-color:var(--border-strong);background:#242a3a;}
+.choice-btn.correct{border-color:var(--green);background:var(--green-dim);color:#86efac;}
+.choice-btn.wrong{border-color:var(--red);background:var(--red-dim);color:#fca5a5;}
+.choice-btn:disabled{cursor:default;}
+
+/* FEEDBACK */
+.fb{padding:.85rem 1.1rem;border-radius:var(--radius);font-size:14px;line-height:1.7;margin-top:.75rem;}
+.fb strong{font-weight:500;}
+.fb.good{background:var(--green-dim);border:1px solid var(--green-border);color:#86efac;}
+.fb.bad{background:var(--red-dim);border:1px solid var(--red-border);color:#fca5a5;}
+.fb.info{background:var(--blue-dim);border:1px solid var(--blue-border);color:#93c5fd;}
+
+/* FREE CODE EDITOR */
+.editor-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);margin:.75rem 0;}
+.editor-topbar{
+  background:#12151f;padding:.4rem .75rem;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text-faint);
+  display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
+}
+.editor-dots{display:flex;gap:5px;}
+.dot{width:9px;height:9px;border-radius:50%;}
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+textarea.code-input{
+  width:100%;background:#0d1117;border:none;outline:none;
+  font-family:'DM Mono',monospace;font-size:13.5px;color:#cdd6f4;
+  padding:1rem 1.25rem;resize:vertical;min-height:120px;line-height:1.7;
+  tab-size:4;
+}
+
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap;align-items:center;}
+.btn{
+  border-radius:var(--radius);padding:.6rem 1.25rem;font-size:14px;
+  font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border);
+  transition:all .15s;
+}
+.btn-primary{background:var(--accent);color:#0a1a0a;border-color:var(--accent);font-weight:600;}
+.btn-primary:hover:not(:disabled){background:#16a34a;}
+.btn-secondary{background:transparent;color:var(--text);border-color:var(--border-strong);}
+.btn-secondary:hover:not(:disabled){background:var(--surface2);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:none;padding:.4rem .5rem;font-size:13px;text-decoration:underline;cursor:pointer;}
+.btn-ghost:hover{color:var(--text);}
+.btn:disabled{opacity:.45;cursor:default;}
+
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+
+
+/* END SCREEN */
+.end-hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
+.end-icon{font-size:56px;margin-bottom:.75rem;}
+.end-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:.5rem;}
+.end-sub{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:480px;margin:0 auto 2rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.5rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;}
+.stat-label{font-size:12px;color:var(--text-faint);margin-bottom:.3rem;font-family:'DM Mono',monospace;letter-spacing:.04em;}
+.stat-val{font-size:26px;font-weight:600;color:var(--text);}
+.topic-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;text-align:left;}
+.topic-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);}
+.topic-row:last-child{border-bottom:none;}
+.tick{color:var(--green);font-size:15px;}
+.cross{color:var(--red-dim);color:#f87171;font-size:15px;}
+.end-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* INTRO SCREEN */
+.intro{max-width:600px;margin:3rem auto;text-align:center;padding:2rem;}
+.intro-title{font-family:'DM Serif Display',serif;font-size:42px;color:var(--text);margin-bottom:.5rem;}
+.intro-sub{font-size:16px;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;}
+.intro-list{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:2rem;}
+.intro-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-muted);}
+.intro-item:last-child{border-bottom:none;}
+.intro-num{color:var(--accent);font-family:'DM Mono',monospace;font-size:13px;min-width:20px;margin-top:1px;}
+.intro-item strong{color:var(--text);font-weight:500;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
+
+/* Responsive */
+@media(max-width:500px){
+  .main{padding:1.25rem 1rem 3rem;}
+  .ch-title{font-size:22px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* PYODIDE BANNER */
+#py-banner{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-top:1px solid var(--border);padding:.65rem 1.5rem;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text-muted);}
+#py-banner.ready{background:var(--green-dim);border-color:var(--green-border);color:var(--green);}
+#py-banner.hidden{display:none;}
+.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.run-output{background:#070a0f;padding:.75rem 1.25rem;font-family:'DM Mono',monospace;font-size:13px;border-top:1px solid var(--border);white-space:pre-wrap;line-height:1.6;display:none;}
+.run-output.show{display:block;}
+.run-output.ok{color:#8bb5a0;}
+.run-output.err{color:#f87171;}
+.btn-reveal{background:var(--surface2);color:var(--text-muted);border-color:var(--border);font-size:13px;padding:.45rem 1rem;}
+.btn-reveal:hover:not(:disabled){background:var(--surface);color:var(--text);}
+</style>
+</head>
+<body>
+
+<div id="py-banner"><div class="spinner" id="py-spinner"></div><span id="py-msg">Loading Python engine &mdash; takes 10&ndash;15 seconds on first visit&hellip;</span></div>
+
+<div class="header">
+  <div class="logo">PythonQuest <span>Data Analyst Edition</span></div>
+  <div class="prog-wrap" id="prog-wrap" style="display:none;">
+    <div class="prog-track"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="prog-label" id="prog-label">1 / 10</div>
+  </div>
+  <div class="xp-badge" id="xp-badge" style="display:none;">0 XP</div>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+// PYODIDE SETUP
+let pyodide = null, pyReady = false;
+async function loadPy(){
+  try{
+    pyodide = await loadPyodide();
+    pyReady = true;
+    const banner = document.getElementById('py-banner');
+    document.getElementById('py-spinner').style.display='none';
+    document.getElementById('py-msg').textContent = '✓ Python engine ready — Shift+Enter to run your code!';
+    banner.classList.add('ready');
+    setTimeout(()=>banner.classList.add('hidden'), 3500);
+  } catch(e){
+    document.getElementById('py-msg').textContent = 'Python engine failed to load. Check your internet connection and refresh.';
+  }
+}
+loadPy();
+
+async function runPython(code){
+  if(!pyReady) return {output:'', error:'Python is still loading — please wait a moment and try again.'};
+  try{
+    const indented = code.split('\n').map(l=>'    '+l).join('\n');
+    const wrapped = `import sys, io\n_out=io.StringIO()\n_err=io.StringIO()\n_oo,_oe=sys.stdout,sys.stderr\nsys.stdout,sys.stderr=_out,_err\ntry:\n${indented}\nexcept Exception as e:\n    print(f"{type(e).__name__}: {e}",file=_err)\nfinally:\n    sys.stdout,sys.stderr=_oo,_oe\n_out.getvalue(),_err.getvalue()`;
+    const res = await pyodide.runPythonAsync(wrapped);
+    const out=res.get(0)||'', err=res.get(1)||'';
+    res.destroy();
+    return {output:out, error:err};
+  } catch(e){
+    const lines=(e.message||String(e)).split('\n');
+    const errLine=lines.find(l=>l.includes('Error:')||l.includes('SyntaxError'))||lines[lines.length-1]||String(e);
+    return {output:'', error:errLine};
+  }
+}
+
+const CHAPTERS = [
+  {
+    concept:"Python & Jupyter Notebooks", time:"~10 min", tag:"Setup",
+    title:"Welcome to the Data Lab",
+    story:`You've just joined <strong>Analytix Ltd</strong> as a Data Analyst apprentice. Your manager, Priya, shows you to your workstation — a laptop with <strong>Jupyter Notebook</strong> open in the browser.\n\n"Everything we do in data starts here," she says. "Python is the language, Jupyter is where we write it. Think of each cell as a sticky note — write some Python, press <em>Shift + Enter</em>, and it runs immediately. The output appears right below."\n\nShe points to a key rule: cells share memory. A variable you create in one cell is available in every cell below it.`,
+    explain:{title:"How Jupyter Notebooks work",body:`A Jupyter Notebook is made of <strong>cells</strong>. Each cell holds Python code. You run a cell with <strong>Shift + Enter</strong> and output appears beneath it.<br><br>Variables created in one cell are available in all later cells — this shared memory is called the <strong>kernel</strong>. The kernel keeps running until you restart it.<br><br><code># This is a comment</code> — Python ignores any line starting with <code>#</code>. Use comments to explain your code.`},
+    code:`<span class="cm"># This is a comment — Python ignores it</span>\n<span class="bi">print</span>(<span class="st">"Hello, Analytix!"</span>)\n<span class="bi">print</span>(<span class="nm">2</span> <span class="op">+</span> <span class="nm">3</span>)\n<span class="bi">print</span>(<span class="nm">10</span> <span class="op">*</span> <span class="nm">4</span>)`,
+    output:`Hello, Analytix!\n5\n40`,
+    mc:{q:`Priya runs a cell containing <code>print(100 / 4)</code>. What appears below the cell?`,choices:["100 / 4","print(100 / 4)","25.0","Nothing — print needs a string"],correct:2,good:`Correct! Python evaluates 100 ÷ 4 = 25.0 (a float) and prints it. The print() function displays whatever you put inside the brackets.`,bad:`Python evaluates the expression first, then print() displays the result. 100 / 4 = 25.0.`},
+    task:`Write two print() statements:\n1. Print your name\n2. Print the result of 365 * 24 (hours in a year)\n\nBonus: add a comment above each line explaining what it does.`,
+    hint:`# Print my name\nprint("Alex")\n\n# Hours in a year\nprint(365 * 24)`,
+    starter:`# Write your two print() statements below\n`
+  },
+  {
+    concept:"Variables & Data Types", time:"~15 min", tag:"Fundamentals",
+    title:"Labelling the Data",
+    story:`Your first task: store some information about the company's top sales rep. "Before we can analyse anything," Priya explains, "we need to hold values in memory. In Python we use <strong>variables</strong> — labelled containers that hold data."\n\nShe writes on the whiteboard: <em>name = "Maya"</em>. "The <strong>=</strong> sign means <em>assign</em> — put the value on the right into the box on the left. It's not the same as equals in maths."`,
+    explain:{title:"The four core data types",body:`<strong>str</strong> — text inside quotes: <code>"hello"</code>, <code>"2024"</code><br><strong>int</strong> — whole numbers: <code>42</code>, <code>-7</code>, <code>1000</code><br><strong>float</strong> — decimal numbers: <code>3.14</code>, <code>99.5</code><br><strong>bool</strong> — only two values: <code>True</code> or <code>False</code><br><br>Use <code>type(x)</code> to check a variable's type. Variable names must start with a letter, use lowercase with underscores: <code>annual_salary</code>.`},
+    code:`analyst_name <span class="op">=</span> <span class="st">"Maya"</span>\nrecords <span class="op">=</span> <span class="nm">1500</span>\navg_salary <span class="op">=</span> <span class="nm">32500.50</span>\nis_complete <span class="op">=</span> <span class="kw">True</span>\n\n<span class="bi">print</span>(analyst_name)\n<span class="bi">print</span>(<span class="fn">type</span>(records))\n<span class="bi">print</span>(<span class="fn">type</span>(avg_salary))`,
+    output:`Maya\n<class 'int'>\n<class 'float'>`,
+    mc:{q:`What is the data type of: <code>score = "95"</code>?`,choices:["int","float","str","bool"],correct:2,good:`Correct! The quotes make it a string — even though 95 looks like a number. <code>"95"</code> ≠ <code>95</code>. Always check for quotes.`,bad:`The quotes are the clue. <code>"95"</code> is a str (string), not an int. Remove the quotes for a number.`},
+    task:`Create four variables to describe yourself:\n• Your name (str)\n• Your age (int)\n• Your height in metres (float)\n• Whether you enjoy data work (bool)\n\nThen print each variable on its own line. Finally, use type() to print the type of your age variable.`,
+    hint:`name = "Alex"\nage = 22\nheight = 1.75\nlikes_data = True\n\nprint(name)\nprint(age)\nprint(height)\nprint(likes_data)\nprint(type(age))`,
+    starter:`# Create your four variables\n\n\n\n\n# Print each one\n\n# Print the type of your age\n`
+  },
+  {
+    concept:"String Operations", time:"~12 min", tag:"Fundamentals",
+    title:"Cleaning the Column Headers",
+    story:`A CSV file arrives with messy column headers — some uppercase, some lowercase, random spaces. "In data work," Priya says, "strings need constant cleaning. Python has a set of built-in string <strong>methods</strong> — actions you can call directly on any piece of text." She also shows you <strong>f-strings</strong>, the cleanest way to build messages that include variable values.`,
+    explain:{title:"Essential string methods & f-strings",body:`<code>.upper()</code> → ALL CAPS<br><code>.lower()</code> → all lowercase<br><code>.strip()</code> → remove whitespace from both ends<br><code>.replace(old, new)</code> → swap characters<br><code>.split(",")</code> → split into a list<br><code>len("hello")</code> → count characters: 5<br><br><strong>f-strings</strong>: put an <code>f</code> before the quote and embed variables in <code>{}</code>:<br><code>f"Hello {name}, you have {count} records"</code>`},
+    code:`col <span class="op">=</span> <span class="st">"  Total Sales  "</span>\nclean <span class="op">=</span> col.<span class="fn">strip</span>().<span class="fn">lower</span>().<span class="fn">replace</span>(<span class="st">" "</span>, <span class="st">"_"</span>)\n<span class="bi">print</span>(clean)\n\nanalyst <span class="op">=</span> <span class="st">"Priya"</span>\nregion <span class="op">=</span> <span class="st">"North"</span>\n<span class="bi">print</span>(<span class="st">f"Report by {analyst} for {region} region"</span>)`,
+    output:`total_sales\nReport by Priya for North region`,
+    mc:{q:`What does <code>"  Hello World  ".strip().upper()</code> return?`,choices:["HELLO WORLD","hello world","Hello World"],correct:0,good:`Correct! strip() removes surrounding spaces first, then upper() capitalises everything. Method chaining runs left to right.`,bad:`Order matters: strip() removes spaces first, then upper() capitalises. The result is "HELLO WORLD" — no surrounding spaces, all caps.`},
+    task:`You have this messy column name:\n<code>column = "  Monthly Revenue  "</code>\n\n1. Clean it to produce "monthly_revenue" (lowercase, no surrounding spaces, underscores instead of spaces)\n2. Store the result in a variable called clean_col\n3. Print using an f-string: "Column ready: monthly_revenue"\n4. Print the length of the cleaned string using len()`,
+    hint:`column = "  Monthly Revenue  "\nclean_col = column.strip().lower().replace(" ", "_")\nprint(f"Column ready: {clean_col}")\nprint(len(clean_col))`,
+    starter:`column = "  Monthly Revenue  "\n\n# Clean the string\n\n# Print using an f-string\n\n# Print the length\n`
+  },
+  {
+    concept:"Lists", time:"~15 min", tag:"Data Structures",
+    title:"The Sales Region List",
+    story:`A colleague emails a list of 12 sales regions to process. "Storing them as separate variables would be chaos," Priya says. "That's what <strong>lists</strong> are for — an ordered, changeable collection of values. One variable holds everything, and you can loop through it, slice it, add to it."`,
+    explain:{title:"Lists: ordered, changeable collections",body:`<code>regions = ["North", "South", "East"]</code><br><br>Indexing starts at <strong>0</strong>: <code>regions[0]</code> → "North"<br>Negative index: <code>regions[-1]</code> → last item<br><code>len(regions)</code> → count of items<br><code>regions[0:2]</code> → slice: items at index 0 and 1<br><code>.append(x)</code> → add to end<br><code>.remove(x)</code> → remove by value<br><code>x in regions</code> → True/False membership check`},
+    code:`regions <span class="op">=</span> [<span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"West"</span>]\n\n<span class="bi">print</span>(regions[<span class="nm">0</span>])        <span class="cm"># North</span>\n<span class="bi">print</span>(regions[<span class="op">-</span><span class="nm">1</span>])       <span class="cm"># West</span>\n<span class="bi">print</span>(<span class="fn">len</span>(regions))     <span class="cm"># 4</span>\n\nregions.<span class="fn">append</span>(<span class="st">"Central"</span>)\n<span class="bi">print</span>(<span class="st">"Central"</span> <span class="kw">in</span> regions)  <span class="cm"># True</span>`,
+    output:`North\nWest\n4\nTrue`,
+    mc:{q:`<code>scores = [88, 72, 95, 60]</code><br>What is <code>scores[2]</code>?`,choices:["72","88","95","60"],correct:2,good:`Correct! Index 2 is the third item — 95. Counting starts at 0: index 0=88, 1=72, 2=95.`,bad:`Remember: index 0=88, index 1=72, index 2=95. Counting always starts at zero in Python.`},
+    task:`Create a list called products containing at least 5 product names.\n\n1. Print the first product\n2. Print the last product using a negative index\n3. Print a slice of the middle 3 products\n4. Add a new product with .append()\n5. Print the total count with len()`,
+    hint:`products = ["Widget", "Gadget", "Donut", "Sprocket", "Gizmo"]\nprint(products[0])\nprint(products[-1])\nprint(products[1:4])\nproducts.append("Thingamajig")\nprint(len(products))`,
+    starter:`# Create your list with 5+ products\nproducts = []\n\n# 1. Print first product\n\n# 2. Print last product (negative index)\n\n# 3. Print middle slice\n\n# 4. Append a new product\n\n# 5. Print length\n`
+  },
+  {
+    concept:"Dictionaries", time:"~15 min", tag:"Data Structures",
+    title:"The Employee Records",
+    story:`HR sends structured data — each employee has a name, department, and salary. "A list would only store the values," Priya says, "but we'd lose track of what each value means. That's where <strong>dictionaries</strong> shine. They store data as key-value pairs — like a row in a spreadsheet where each column has a name."`,
+    explain:{title:"Dictionaries: key-value stores",body:`<code>employee = {"name": "Jo", "salary": 28000}</code><br><br>Access value: <code>employee["name"]</code> → "Jo"<br>Update value: <code>employee["salary"] = 30000</code><br>Add new key: <code>employee["dept"] = "Finance"</code><br>Check key exists: <code>"name" in employee</code> → True<br>All keys: <code>employee.keys()</code><br>All values: <code>employee.values()</code><br>All pairs: <code>employee.items()</code>`},
+    code:`employee <span class="op">=</span> {\n    <span class="st">"name"</span>: <span class="st">"Kofi"</span>,\n    <span class="st">"dept"</span>: <span class="st">"Analytics"</span>,\n    <span class="st">"salary"</span>: <span class="nm">31000</span>\n}\n\n<span class="bi">print</span>(employee[<span class="st">"name"</span>])\nemployee[<span class="st">"salary"</span>] <span class="op">=</span> <span class="nm">33000</span>\nemployee[<span class="st">"location"</span>] <span class="op">=</span> <span class="st">"London"</span>\n<span class="bi">print</span>(employee)`,
+    output:`Kofi\n{'name': 'Kofi', 'dept': 'Analytics', 'salary': 33000, 'location': 'London'}`,
+    mc:{q:`<code>data = {"city": "London", "pop": 9000000}</code><br>How do you access the population?`,choices:['data[0]','data["pop"]','data.get_pop()','data(pop)'],correct:1,good:`Correct! Dictionary values are accessed by their key in square brackets: data["pop"].`,bad:`Dictionaries use key lookup: data["pop"]. Numeric indexes only work on lists.`},
+    task:`Create a dictionary for a product with these keys:\n• "name" (str)\n• "price" (float)\n• "in_stock" (bool)\n• "units" (int)\n\nThen:\n1. Print the product name using its key\n2. Increase the price by £5 and update the dictionary\n3. Print the updated price\n4. Print all the keys using .keys()`,
+    hint:`product = {"name": "Widget", "price": 9.99, "in_stock": True, "units": 250}\nprint(product["name"])\nproduct["price"] = product["price"] + 5\nprint(product["price"])\nprint(product.keys())`,
+    starter:`# Create your product dictionary\nproduct = {}\n\n# 1. Print the name\n\n# 2. Increase price by £5\n\n# 3. Print updated price\n\n# 4. Print all keys\n`
+  },
+  {
+    concept:"Conditionals (if / elif / else)", time:"~15 min", tag:"Logic",
+    title:"The Performance Flag",
+    story:`Priya drops a spreadsheet on your desk. "We need to flag each region's performance — green if they exceeded target, amber if they hit it, red if they missed it. Your code needs to <strong>make decisions</strong>." She sketches out an if/elif/else on the whiteboard. "Python uses <em>indentation</em> — four spaces — to group the code belonging to each branch. No curly braces."`,
+    explain:{title:"if / elif / else — decision making",body:`<code>if condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs when True</code><br><code>elif other_condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs if first was False</code><br><code>else:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs if all above False</code><br><br>Comparison operators: <code>== != > < >= <=</code><br>Logical operators: <code>and</code>&nbsp; <code>or</code>&nbsp; <code>not</code><br><br>Only <strong>one</strong> branch ever runs — the first one whose condition is True.`},
+    code:`sales <span class="op">=</span> <span class="nm">85000</span>\ntarget <span class="op">=</span> <span class="nm">80000</span>\n\n<span class="kw">if</span> sales <span class="op">>=</span> target <span class="op">*</span> <span class="nm">1.1</span>:\n    <span class="bi">print</span>(<span class="st">"GREEN — exceeds target by 10%+"</span>)\n<span class="kw">elif</span> sales <span class="op">>=</span> target:\n    <span class="bi">print</span>(<span class="st">"AMBER — on target"</span>)\n<span class="kw">else</span>:\n    <span class="bi">print</span>(<span class="st">"RED — below target"</span>)`,
+    output:`AMBER — on target`,
+    mc:{q:`<code>x = 15</code><br><code>if x > 20:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("A")</code><br><code>elif x > 10:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("B")</code><br><code>else:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("C")</code><br>What prints?`,choices:["A","B","C","A and B"],correct:1,good:`Correct! x=15 fails the first check (not > 20), but passes the second (15 > 10). So "B" prints.`,bad:`x=15: first condition x>20 is False, second x>10 is True — so the elif branch runs and prints "B".`},
+    task:`Write a grade classifier. Create a variable called score and set it to any number.\n\nUse if/elif/else to print:\n• "Distinction" if score >= 80\n• "Merit" if score >= 60\n• "Pass" if score >= 40\n• "Refer" otherwise\n\nThen change your score and run it again to test different branches.`,
+    hint:`score = 72\n\nif score >= 80:\n    print("Distinction")\nelif score >= 60:\n    print("Merit")\nelif score >= 40:\n    print("Pass")\nelse:\n    print("Refer")`,
+    starter:`score = 72  # try changing this number\n\n# Write your if/elif/else below\n`
+  },
+  {
+    concept:"For Loops", time:"~15 min", tag:"Iteration",
+    title:"Processing Every Row",
+    story:`A list of 50 store names needs processing. "You're not writing 50 print statements," Priya says firmly. "A <strong>for loop</strong> runs a block of code once for each item in a collection. It's one of the most important tools in a data analyst's kit — every row in a dataset, every column in a table, every item in a list."`,
+    explain:{title:"Iterating with for loops",body:`<code>for item in collection:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs once per item</code><br><br><code>range(5)</code> → 0, 1, 2, 3, 4<br><code>range(1, 6)</code> → 1, 2, 3, 4, 5<br><code>range(0, 10, 2)</code> → 0, 2, 4, 6, 8 (step of 2)<br><code>enumerate(list)</code> → gives index and value together<br><br>You can loop over lists, strings, dictionaries (.items()), and more.`},
+    code:`stores <span class="op">=</span> [<span class="st">"Birmingham"</span>, <span class="st">"Manchester"</span>, <span class="st">"Leeds"</span>]\n\n<span class="kw">for</span> i, store <span class="kw">in</span> <span class="fn">enumerate</span>(stores, <span class="nm">1</span>):\n    <span class="bi">print</span>(<span class="st">f"{i}. Store: {store}"</span>)\n\n<span class="cm"># Accumulating with a loop</span>\ntotal <span class="op">=</span> <span class="nm">0</span>\n<span class="kw">for</span> n <span class="kw">in</span> [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>]:\n    total <span class="op">+=</span> n\n<span class="bi">print</span>(<span class="st">f"Total: {total}"</span>)`,
+    output:`1. Store: Birmingham\n2. Store: Manchester\n3. Store: Leeds\nTotal: 60`,
+    mc:{q:`<code>total = 0</code><br><code>for n in [10, 20, 30]:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;total = total + n</code><br><code>print(total)</code><br>What prints?`,choices:["10","30","60","[10, 20, 30]"],correct:2,good:`Correct! Each loop adds to total: 0+10=10, 10+20=30, 30+30=60. This pattern — accumulating inside a loop — is used everywhere in data work.`,bad:`The loop accumulates: starts at 0, adds 10→10, adds 20→30, adds 30→60. Prints 60.`},
+    task:`You have monthly sales figures:\n<code>sales = [12000, 15000, 9000, 18000, 21000, 14000]</code>\n\n1. Loop through and print each value formatted as "£12,000" (use an f-string)\n2. Track the running total inside the loop\n3. After the loop, print the total and the average\n\nHint: average = total / len(sales)`,
+    hint:`sales = [12000, 15000, 9000, 18000, 21000, 14000]\ntotal = 0\nfor s in sales:\n    print(f"£{s:,}")\n    total += s\nprint(f"Total: £{total:,}")\nprint(f"Average: £{round(total / len(sales)):,}")`,
+    starter:`sales = [12000, 15000, 9000, 18000, 21000, 14000]\ntotal = 0\n\n# Loop through sales\n# Print each value formatted as £12,000\n# Accumulate the total\n\n\n# Print total and average after the loop\n`
+  },
+  {
+    concept:"While Loops & break/continue", time:"~10 min", tag:"Iteration",
+    title:"The Data Quality Gate",
+    story:`A live data feed keeps sending records until it hits -1, a sentinel value. "We don't know how many records are coming," Priya says, "so a for loop won't do. We need a <strong>while loop</strong> — it keeps running as long as a condition stays True." She adds a warning: "Always make sure something inside the loop eventually makes the condition False. Otherwise it runs forever."`,
+    explain:{title:"While loops, break, and continue",body:`<code>while condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs until condition is False</code><br><br><code>break</code> — exit the loop immediately<br><code>continue</code> — skip the rest of this iteration, go to next<br><br>Common use in data: reading until an end-of-file marker, retrying until a condition is met, or processing user input. Always ensure the variable in your condition <strong>changes</strong> each iteration.`},
+    code:`records <span class="op">=</span> [<span class="nm">42</span>, <span class="nm">17</span>, <span class="nm">91</span>, <span class="op">-</span><span class="nm">1</span>, <span class="nm">55</span>]\ni <span class="op">=</span> <span class="nm">0</span>\n\n<span class="kw">while</span> i <span class="op"><</span> <span class="fn">len</span>(records):\n    <span class="kw">if</span> records[i] <span class="op">==</span> <span class="op">-</span><span class="nm">1</span>:\n        <span class="bi">print</span>(<span class="st">"End of feed."</span>)\n        <span class="kw">break</span>\n    <span class="bi">print</span>(<span class="st">f"Processing: {records[i]}"</span>)\n    i <span class="op">+=</span> <span class="nm">1</span>`,
+    output:`Processing: 42\nProcessing: 17\nProcessing: 91\nEnd of feed.`,
+    mc:{q:`<code>x = 1</code><br><code>while x < 10:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;x = x * 2</code><br><code>print(x)</code><br>What prints?`,choices:["8","10","16","The loop runs forever"],correct:2,good:`Correct! x doubles each iteration: 1→2→4→8→16. When x reaches 16, the condition (16 < 10) is False so the loop exits and prints 16.`,bad:`Not quite. x doubles each iteration: 1→2→4→8→16. When x reaches 16, the condition 16 < 10 is False — so the loop stops and print(x) shows 16.`},
+    task:`Write a while loop that:\n1. Starts with count = 1\n2. Prints "Row {count} processed" each iteration\n3. Stops after processing row 6\n4. Prints "All rows done!" after the loop\n\nBonus: Use continue to skip row 4 (don't process it, just move on).`,
+    hint:`count = 1\nwhile count <= 6:\n    print(f"Row {count} processed")\n    count += 1\nprint("All rows done!")\n\n# Bonus: to skip row 4, add inside the loop:\n# if count == 4:\n#     count += 1\n#     continue`,
+    starter:`count = 1\n\n# Write your while loop\n# Remember to increment count each time!\n\n\n# Print completion message\n`
+  },
+  {
+    concept:"Functions", time:"~15 min", tag:"Reusability",
+    title:"The Reusable Formula",
+    story:`You notice you've written the same VAT calculation in four different cells. Priya spots it immediately. "Never repeat yourself — that's how bugs creep in. When you change the rate in one place, you forget the others." She opens a new cell. "Wrap it in a <strong>function</strong>. Write it once, give it a name, call it anywhere. Change it once and everything updates."`,
+    explain:{title:"Defining and calling functions",body:`<code>def function_name(parameter):</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;"""Optional description."""</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# code block</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;return result</code><br><br><strong>Parameters</strong> are the inputs. <code>return</code> sends a value back to the caller.<br>A function without return gives back <code>None</code>.<br>Multiple parameters: <code>def add(a, b):</code><br>Default parameter: <code>def greet(name="World"):</code> — used if caller doesn't supply one.`},
+    code:`<span class="kw">def</span> <span class="fn">add_vat</span>(price, rate<span class="op">=</span><span class="nm">0.20</span>):\n    <span class="st">"""Add VAT to a price. Default rate is 20%."""</span>\n    <span class="kw">return</span> price <span class="op">*</span> (<span class="nm">1</span> <span class="op">+</span> rate)\n\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">100</span>))         <span class="cm"># 120.0</span>\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">100</span>, <span class="nm">0.05</span>))    <span class="cm"># 105.0</span>\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">250</span>))         <span class="cm"># 300.0</span>`,
+    output:`120.0\n105.0\n300.0`,
+    mc:{q:`<code>def square(n):</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;return n * n</code><br><code>result = square(7)</code><br><code>print(result)</code><br>What prints?`,choices:["n * n","77","49","square(7)"],correct:2,good:`Correct! square(7) runs with n=7 and returns 7*7=49. result stores 49, then print() displays it.`,bad:`The function runs with n=7. It returns n*n = 7*7 = 49. So result=49 and print(result) shows 49.`},
+    task:`Write a function called classify_sales(amount) that:\n• Returns "High" if amount > 50000\n• Returns "Medium" if amount > 20000\n• Returns "Low" otherwise\n\nThen write a second function called sales_report(region, amount) that calls classify_sales() inside it and prints a line like this:\n\"North: £75,000 — High\"\n\nCall sales_report() for at least 3 different regions.`,
+    hint:`def classify_sales(amount):\n    if amount > 50000:\n        return "High"\n    elif amount > 20000:\n        return "Medium"\n    else:\n        return "Low"\n\ndef sales_report(region, amount):\n    label = classify_sales(amount)\n    print(f"{region}: £{amount:,} — {label}")\n\nsales_report("North", 75000)\nsales_report("South", 35000)\nsales_report("East", 12000)`,
+    starter:`# Define classify_sales(amount)\n\n\n\n\n# Define sales_report(region, amount)\n\n\n\n# Call sales_report for 3 regions\n`
+  },
+  {
+    concept:"Putting It All Together", time:"~13 min", tag:"Capstone",
+    title:"Your First Data Pipeline",
+    story:`Priya smiles. "You've covered every fundamental. Now let's build something real." She opens a blank notebook. "In your apprenticeship, you'll write pipelines — code that takes raw data, processes it, and produces a report. Today, you're going to write one from scratch using everything you've learned."`,
+    explain:{title:"A new data structure: list of dictionaries",body:`So far you've used lists of strings and a single dictionary separately. In data work you constantly combine them — a <strong>list where every item is a dictionary</strong>, one row per dict. This is exactly how pandas reads a CSV file.<br><br><code>products = [<br>&nbsp;&nbsp;&nbsp;&nbsp;{"name": "Widget", "price": 9.99},<br>&nbsp;&nbsp;&nbsp;&nbsp;{"name": "Gadget", "price": 24.99},<br>]<br>for row in products:<br>&nbsp;&nbsp;&nbsp;&nbsp;print(row["name"])</code><br><br>In this chapter you will build that pattern step by step, adding one piece at a time.`},
+    code:`sales_data <span class="op">=</span> [\n    {<span class="st">"region"</span>: <span class="st">"North"</span>, <span class="st">"revenue"</span>: <span class="nm">45000</span>},\n    {<span class="st">"region"</span>: <span class="st">"South"</span>, <span class="st">"revenue"</span>: <span class="nm">82000</span>},\n    {<span class="st">"region"</span>: <span class="st">"East"</span>,  <span class="st">"revenue"</span>: <span class="nm">31000</span>},\n]\n\n<span class="kw">def</span> <span class="fn">flag</span>(rev):\n    <span class="kw">return</span> <span class="st">"✅"</span> <span class="kw">if</span> rev <span class="op">>=</span> <span class="nm">50000</span> <span class="kw">else</span> <span class="st">"⚠️"</span>\n\ntotal <span class="op">=</span> <span class="nm">0</span>\n<span class="kw">for</span> row <span class="kw">in</span> sales_data:\n    r, v <span class="op">=</span> row[<span class="st">"region"</span>], row[<span class="st">"revenue"</span>]\n    <span class="bi">print</span>(<span class="st">f"{flag(v)}  {r}: £{v:,}"</span>)\n    total <span class="op">+=</span> v\n<span class="bi">print</span>(<span class="st">f"\\nTotal: £{total:,}"</span>)`,
+    output:`⚠️  North: £45,000\n✅  South: £82,000\n⚠️  East: £31,000\n\nTotal: £158,000`,
+    mc:{q:`In the pipeline, why does South get ✅ but North gets ⚠️?`,choices:["South has more regions","South's revenue (£82,000) is >= £50,000; North's (£45,000) is not","The flag function always returns ✅ for southern regions","The order of the list determines the flag"],correct:1,good:`Exactly right! The flag() function applies a conditional: revenue >= 50000 gets ✅, everything below gets ⚠️. Pure Python logic.`,bad:`It's purely about the number. flag() checks if revenue >= 50000. 82000 passes; 45000 doesn't.`},
+    task:`The data is provided — do not change it. Work through each step in order and run the code after each one.\\n\\nStep 1: Explore the data\\nPrint data[0] to see what a single row looks like.\\n\\nStep 2: Loop and print product names\\nWrite a for loop and print row[\"product\"] for each row.\\n\\nStep 3: Add the revenue() function\\nWrite a function revenue(units, price) that returns units * price.\\nInside your loop call it and print the product name and its revenue.\\n\\nStep 4: Add the status() function\\nWrite a function status(rev) that returns \"STAR\" if rev > 5000, else \"STD\".\\nUpdate your print line to include the status.\\n\\nStep 5: Add a running total\\nCreate total = 0 before the loop, add rev to it each iteration,\\nthen print the total revenue after the loop.`,
+    hint:`# Data provided — a list of dictionaries, one product per row\\ndata = [\\n    {\"product\": \"Widget\", \"units_sold\": 150, \"unit_price\": 12},\\n    {\"product\": \"Gadget\", \"units_sold\": 40, \"unit_price\": 25},\\n    {\"product\": \"Donut\", \"units_sold\": 800, \"unit_price\": 2},\\n    {\"product\": \"Sprocket\", \"units_sold\": 20, \"unit_price\": 300},\\n]\\n\\n# Step 1: print the first row to explore the structure\\nprint(data[0])\\n\\n# Step 2: loop and print just the product name\\nfor row in data:\\n    print(row[\"product\"])\\n\\n# Step 3: revenue function, call it inside the loop\\ndef revenue(units, price):\\n    return units * price\\n\\nfor row in data:\\n    rev = revenue(row[\"units_sold\"], row[\"unit_price\"])\\n    print(f\"{row[\"product\"]} — £{rev:,}\")\\n\\n# Step 4: status function, update the print line\\ndef status(rev):\\n    return \"STAR\" if rev > 5000 else \"STD\"\\n\\nfor row in data:\\n    rev = revenue(row[\"units_sold\"], row[\"unit_price\"])\\n    print(f\"[{status(rev)}] {row[\"product\"]} — £{rev:,}\")\\n\\n# Step 5: add running total\\ntotal = 0\\nfor row in data:\\n    rev = revenue(row[\"units_sold\"], row[\"unit_price\"])\\n    print(f\"[{status(rev)}] {row[\"product\"]} — £{rev:,}\")\\n    total += rev\\nprint(f\"Total revenue: £{total:,}\")`,
+    starter:`# The data is provided for you — do not change it\ndata = [\n    {\"product\": \"Widget\", \"units_sold\": 150, \"unit_price\": 12},\n    {\"product\": \"Gadget\", \"units_sold\": 40, \"unit_price\": 25},\n    {\"product\": \"Donut\", \"units_sold\": 800, \"unit_price\": 2},\n    {\"product\": \"Sprocket\", \"units_sold\": 20, \"unit_price\": 300},\n]\n\n# Step 1: print data[0] to see what one row looks like\n\n# Step 2: write a for loop that prints row[\"product\"] for each row\n\n# Step 3: define revenue(units, price) and call it inside the loop\n\n# Step 4: define status(rev) and add it to your print line\n\n# Step 5: add total = 0 before the loop, accumulate, print after\n`
+  }
+];
+
+let ch = 0, xp = 0, mcResults = new Array(CHAPTERS.length).fill(null), nextShown = false;
+
+function qs(id){return document.getElementById(id);}
+
+function showHeader(){
+  qs('prog-wrap').style.display='flex';
+  qs('xp-badge').style.display='block';
+}
+
+function updateProgress(){
+  const pct = Math.round(ch / CHAPTERS.length * 100);
+  qs('prog-bar').style.width = pct + '%';
+  qs('prog-label').textContent = `${Math.min(ch+1, CHAPTERS.length)} / ${CHAPTERS.length}`;
+  qs('xp-badge').textContent = xp + ' XP';
+}
+
+function renderIntro(){
+  qs('main').innerHTML = `
+<div class="intro">
+  <div class="intro-title">Python Quest</div>
+  <div class="intro-sub">Python Fundamentals for Data Analysts. ~2 hours of practical hands-on Python tasks.</div>
+  <div class="intro-list">
+    ${CHAPTERS.map((c,i)=>`<div class="intro-item"><span class="intro-num">${String(i+1).padStart(2,'0')}</span><div><strong>${c.concept}</strong> — ${c.title} <span style="color:var(--text-faint);font-size:13px;">${c.time}</span></div></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" style="font-size:16px;padding:.75rem 2rem;" onclick="startGame()">Begin the course →</button>
+</div>`;
+}
+
+function startGame(){
+  showHeader();
+  renderChapter();
+}
+
+function renderChapter(){
+  nextShown = false;
+  if(ch >= CHAPTERS.length){ renderEnd(); return; }
+  updateProgress();
+  const c = CHAPTERS[ch];
+  const tagColor = {Setup:'pill-blue',Fundamentals:'pill-green','Data Structures':'pill-amber',Logic:'pill-blue',Iteration:'pill-amber',Reusability:'pill-green',Capstone:'pill-green'}[c.tag]||'pill-blue';
+
+  qs('main').innerHTML = `
+<div class="ch-eyebrow">Chapter ${ch+1} of ${CHAPTERS.length}</div>
+<div class="ch-title">${c.title}</div>
+<div class="ch-meta">
+  <span class="pill ${tagColor}">${c.concept}</span>
+  <span class="pill pill-blue" style="background:var(--surface);border-color:var(--border);color:var(--text-muted);">${c.time}</span>
+</div>
+
+<div class="card">
+  <div class="card-label">The story</div>
+  <div class="story-text">${c.story.replace(/\n/g,'<br>')}</div>
+</div>
+
+<div class="card">
+  <div class="card-label">${c.explain.title}</div>
+  <div class="explain-body">${c.explain.body}</div>
+</div>
+
+<div class="card-label" style="margin:.25rem 0 .25rem;">Example</div>
+<div class="jup-cell">
+  <div class="jup-topbar"><div class="jup-dot"></div><span>In [1]:</span></div>
+  <div class="code-area">${c.code}</div>
+  <div class="out-area"><div class="out-label">Out:</div>${c.output}</div>
+</div>
+
+<div class="divider"></div>
+
+<div class="card" id="mc-card">
+  <div class="card-label">Quick check</div>
+  <div class="mc-q">${c.mc.q}</div>
+  <div class="choices" id="mc-choices">
+    ${c.mc.choices.map((ch,i)=>`<button class="choice-btn" onclick="choose(${i})">${ch}</button>`).join('')}
+  </div>
+  <div id="mc-fb"></div>
+  <div id="mc-next"></div>
+</div>
+`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function choose(idx){
+  const c = CHAPTERS[ch];
+  document.querySelectorAll('.choice-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===c.mc.correct) b.classList.add('correct');
+    else if(i===idx) b.classList.add('wrong');
+  });
+  const ok = idx===c.mc.correct;
+  if(ok){xp++;mcResults[ch]=true;}else{mcResults[ch]=false;}
+  updateProgress();
+  qs('mc-fb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'✓ '+c.mc.good:'✗ '+c.mc.bad}</div>`;
+  qs('mc-next').innerHTML=`<div class="btn-row" style="margin-top:.75rem;"><button class="btn btn-primary" onclick="showCodingTask()">Practice it — write some code →</button></div>`;
+}
+
+function showCodingTask(){
+  const c = CHAPTERS[ch];
+  const taskHtml = `
+<div class="divider"></div>
+<div class="card" id="task-card">
+  <div class="card-label">Code practice</div>
+  <div class="story-text" style="white-space:pre-line;margin-bottom:0;">${c.task}</div>
+</div>
+
+<div class="editor-wrap">
+  <div class="editor-topbar">
+    <div class="editor-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <span id="cell-label">Your code &mdash; In [ ]:</span>
+    <span style="color:var(--text-faint);">Shift+Enter to run</span>
+  </div>
+  <textarea class="code-input" id="user-code" spellcheck="false" onkeydown="handleTab(event)">${c.starter}</textarea>
+  <div class="run-output" id="run-output"></div>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-primary" id="run-btn" onclick="runCode()">&#9654; Run code</button>
+  <button class="btn btn-reveal" id="answer-btn" onclick="revealAnswer()">Show example answer</button>
+</div>
+
+<div id="answer-area"></div>
+<div id="next-area"></div>
+`;
+  qs('main').insertAdjacentHTML('beforeend', taskHtml);
+  qs('task-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function handleTab(e){
+  if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart,en=t.selectionEnd;t.value=t.value.substring(0,s)+'    '+t.value.substring(en);t.selectionStart=t.selectionEnd=s+4;}
+  if(e.key==='Enter'&&e.shiftKey){e.preventDefault();const btn=qs('run-btn');if(btn&&!btn.disabled)runCode();}
+}
+
+
+async function runCode(){
+  const code = qs('user-code').value;
+  if(!code.trim()) return;
+  const btn = qs('run-btn'), outEl = qs('run-output'), lbl = qs('cell-label');
+  btn.disabled = true; btn.textContent = 'Running…';
+  if(lbl) lbl.textContent = 'Your code — In [*]:';
+  outEl.className = 'run-output show ok';
+  outEl.textContent = 'Running…';
+
+  const {output, error} = await runPython(code);
+
+  btn.disabled = false; btn.textContent = '▶ Run code';
+  if(lbl) lbl.textContent = 'Your code — In [1]:';
+
+  if(error){
+    outEl.className = 'run-output show err';
+    outEl.textContent = '⚠ ' + error + (output ? '\n' + output : '');
+  } else {
+    outEl.className = 'run-output show ok';
+    outEl.textContent = output || '(code ran — no output. Did you forget print()?)';
+  }
+
+  if(!error && !nextShown){
+    nextShown = true; xp++; updateProgress(); showNextBtn();
+  }
+}
+
+function showNextBtn(){
+  const isLast = ch === CHAPTERS.length - 1;
+  qs('next-area').innerHTML = `<div class="btn-row" style="margin-top:.75rem;">
+    <button class="btn btn-primary" onclick="advance()">${isLast ? 'See your results →' : 'Next chapter →'}</button>
+  </div>`;
+}
+
+function revealAnswer(){
+  const c = CHAPTERS[ch];
+  const ab = qs('answer-btn');
+  if(ab){ ab.disabled = true; ab.textContent = 'Answer shown'; }
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const areaEl = qs('answer-area');
+  if(!areaEl) return;
+  areaEl.innerHTML = `<div class="fb info" style="margin-top:.75rem;">
+    <div style="font-weight:500;margin-bottom:.5rem;">Example answer</div>
+    <div style="font-size:13px;color:var(--blue);margin-bottom:.75rem;">There are often several valid solutions — compare the approach, not just the exact code.</div>
+    <div class="jup-cell">
+      <div class="jup-topbar"><div class="jup-dot"></div><span>Solution:</span></div>
+      <div class="code-area">${esc(c.hint)}</div>
+    </div>
+  </div>`;
+  if(!nextShown){ nextShown = true; xp++; updateProgress(); showNextBtn(); }
+}
+
+function advance(){
+  ch++;
+  renderChapter();
+}
+
+function renderEnd(){
+  const total = CHAPTERS.length * 2;
+  const pct = Math.round(xp/total*100);
+  const grade = pct>=80?'Distinction 🏆':pct>=60?'Merit ⭐':pct>=40?'Pass ✅':'Keep practising 💪';
+  qs('prog-bar').style.width='100%';
+  qs('prog-label').textContent=`Complete`;
+  qs('xp-badge').textContent=xp+' XP';
+
+  qs('main').innerHTML=`
+<div class="end-hero">
+  <div class="end-icon">🎓</div>
+  <div class="end-title">Python Fundamentals Complete!</div>
+  <div class="end-sub">You've worked through all 10 chapters — variables, strings, lists, dictionaries, conditionals, loops, functions, and a full data pipeline. These are the foundations every data analyst needs.</div>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-label">XP EARNED</div><div class="stat-val">${xp} / ${total}</div></div>
+  <div class="stat-card"><div class="stat-label">SCORE</div><div class="stat-val">${pct}%</div></div>
+  <div class="stat-card"><div class="stat-label">GRADE</div><div class="stat-val" style="font-size:18px;">${grade}</div></div>
+  <div class="stat-card"><div class="stat-label">CHAPTERS</div><div class="stat-val">${CHAPTERS.length} / ${CHAPTERS.length}</div></div>
+</div>
+<div class="topic-summary">
+  <div class="card-label" style="margin-bottom:.5rem;">Topics covered</div>
+  ${CHAPTERS.map((c,i)=>`<div class="topic-row"><span class="${mcResults[i]?'tick':'cross'}">${mcResults[i]?'✓':'○'}</span>${c.concept}</div>`).join('')}
+</div>
+<div class="end-btns">
+  <button class="btn btn-secondary" onclick="restart()">Start again</button>
+  <button class="btn btn-primary" onclick="window.open('https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html','_blank')">Next: start learning pandas →</button>
+</div>
+`;
+}
+
+function restart(){ch=0;xp=0;nextShown=false;mcResults=new Array(CHAPTERS.length).fill(null);renderIntro();}
+
+renderIntro();
+</script>
+</body>
+</html>\"North: £75,000 — High\"!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Quest — Data Analyst Apprentice Training</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1f2436;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.15);
+  --text: #e8eaf0;
+  --text-muted: #8892a4;
+  --text-faint: #4a5568;
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --green-border: rgba(34,197,94,0.35);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.1);
+  --red-border: rgba(248,113,113,0.3);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.1);
+  --blue-border: rgba(96,165,250,0.25);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.1);
+  --purple: #a78bfa;
+  --accent: #22c55e;
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.6;
+}
+
+/* HEADER */
+.header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:1rem;height:56px;
+}
+.logo{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:var(--accent);
+  white-space:nowrap;flex-shrink:0;
+}
+.logo span{color:var(--text-muted);font-size:13px;font-family:'DM Sans',sans-serif;margin-left:6px;}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:10px;}
+.prog-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .5s ease;}
+.prog-label{font-size:12px;color:var(--text-muted);white-space:nowrap;font-family:'DM Mono',monospace;}
+.xp-badge{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green);font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;font-family:'DM Mono',monospace;}
+
+/* LAYOUT */
+.main{max-width:760px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+/* CHAPTER INTRO */
+.ch-eyebrow{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--text-faint);text-transform:uppercase;margin-bottom:.4rem;
+}
+.ch-title{
+  font-family:'DM Serif Display',serif;
+  font-size:28px;color:var(--text);margin-bottom:.25rem;
+}
+.ch-meta{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.pill-green{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border);}
+.pill-blue{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border);}
+.pill-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(251,191,36,.3);}
+
+/* CARDS */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;
+}
+.card-label{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--text-faint);text-transform:uppercase;margin-bottom:.6rem;}
+.story-text{font-size:15px;line-height:1.8;color:var(--text);}
+.story-text strong{color:var(--accent);font-weight:500;}
+.story-text em{color:var(--blue);font-style:italic;}
+
+/* EXPLAIN */
+.explain-body{font-size:14px;line-height:1.8;color:var(--text-muted);}
+.explain-body code{font-family:'DM Mono',monospace;font-size:13px;background:var(--surface2);padding:1px 5px;border-radius:4px;color:var(--purple);}
+.explain-body strong{color:var(--text);font-weight:500;}
+
+/* CODE BLOCKS */
+.jup-cell{border-radius:var(--radius);overflow:hidden;margin:.75rem 0;border:1px solid var(--border);}
+.jup-topbar{
+  background:#12151f;padding:.4rem .75rem;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text-faint);
+  display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);
+}
+.jup-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+.code-area{background:#0d1117;padding:1rem 1.25rem;font-family:'DM Mono',monospace;font-size:13.5px;line-height:1.7;overflow-x:auto;white-space:pre;}
+.out-area{background:#070a0f;padding:.75rem 1.25rem;font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;color:#8bb5a0;border-top:1px solid var(--border);white-space:pre-wrap;}
+.out-label{font-size:10px;letter-spacing:.06em;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;}
+
+/* Syntax highlighting */
+.kw{color:#ff79c6;}.fn{color:#8be9fd;}.st{color:#f1fa8c;}.nm{color:#bd93f9;}.cm{color:#6272a4;font-style:italic;}.bi{color:#50fa7b;}.op{color:#ff79c6;}.cls{color:#8be9fd;}
+
+/* MULTIPLE CHOICE */
+.mc-q{font-size:15px;font-weight:500;color:var(--text);margin-bottom:1rem;line-height:1.6;}
+.mc-q code{font-family:'DM Mono',monospace;font-size:13px;background:var(--surface2);padding:2px 6px;border-radius:4px;color:var(--purple);}
+.choices{display:flex;flex-direction:column;gap:8px;}
+.choice-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.7rem 1rem;
+  font-size:14px;color:var(--text);cursor:pointer;text-align:left;
+  font-family:'DM Sans',sans-serif;transition:border-color .15s,background .15s;
+}
+.choice-btn:hover:not(:disabled){border-color:var(--border-strong);background:#242a3a;}
+.choice-btn.correct{border-color:var(--green);background:var(--green-dim);color:#86efac;}
+.choice-btn.wrong{border-color:var(--red);background:var(--red-dim);color:#fca5a5;}
+.choice-btn:disabled{cursor:default;}
+
+/* FEEDBACK */
+.fb{padding:.85rem 1.1rem;border-radius:var(--radius);font-size:14px;line-height:1.7;margin-top:.75rem;}
+.fb strong{font-weight:500;}
+.fb.good{background:var(--green-dim);border:1px solid var(--green-border);color:#86efac;}
+.fb.bad{background:var(--red-dim);border:1px solid var(--red-border);color:#fca5a5;}
+.fb.info{background:var(--blue-dim);border:1px solid var(--blue-border);color:#93c5fd;}
+
+/* FREE CODE EDITOR */
+.editor-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);margin:.75rem 0;}
+.editor-topbar{
+  background:#12151f;padding:.4rem .75rem;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--text-faint);
+  display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
+}
+.editor-dots{display:flex;gap:5px;}
+.dot{width:9px;height:9px;border-radius:50%;}
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+textarea.code-input{
+  width:100%;background:#0d1117;border:none;outline:none;
+  font-family:'DM Mono',monospace;font-size:13.5px;color:#cdd6f4;
+  padding:1rem 1.25rem;resize:vertical;min-height:120px;line-height:1.7;
+  tab-size:4;
+}
+
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap;align-items:center;}
+.btn{
+  border-radius:var(--radius);padding:.6rem 1.25rem;font-size:14px;
+  font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border);
+  transition:all .15s;
+}
+.btn-primary{background:var(--accent);color:#0a1a0a;border-color:var(--accent);font-weight:600;}
+.btn-primary:hover:not(:disabled){background:#16a34a;}
+.btn-secondary{background:transparent;color:var(--text);border-color:var(--border-strong);}
+.btn-secondary:hover:not(:disabled){background:var(--surface2);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:none;padding:.4rem .5rem;font-size:13px;text-decoration:underline;cursor:pointer;}
+.btn-ghost:hover{color:var(--text);}
+.btn:disabled{opacity:.45;cursor:default;}
+
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+
+
+/* END SCREEN */
+.end-hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
+.end-icon{font-size:56px;margin-bottom:.75rem;}
+.end-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);margin-bottom:.5rem;}
+.end-sub{font-size:16px;color:var(--text-muted);line-height:1.7;max-width:480px;margin:0 auto 2rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.5rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;}
+.stat-label{font-size:12px;color:var(--text-faint);margin-bottom:.3rem;font-family:'DM Mono',monospace;letter-spacing:.04em;}
+.stat-val{font-size:26px;font-weight:600;color:var(--text);}
+.topic-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;text-align:left;}
+.topic-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);}
+.topic-row:last-child{border-bottom:none;}
+.tick{color:var(--green);font-size:15px;}
+.cross{color:var(--red-dim);color:#f87171;font-size:15px;}
+.end-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* INTRO SCREEN */
+.intro{max-width:600px;margin:3rem auto;text-align:center;padding:2rem;}
+.intro-title{font-family:'DM Serif Display',serif;font-size:42px;color:var(--text);margin-bottom:.5rem;}
+.intro-sub{font-size:16px;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;}
+.intro-list{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:2rem;}
+.intro-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-muted);}
+.intro-item:last-child{border-bottom:none;}
+.intro-num{color:var(--accent);font-family:'DM Mono',monospace;font-size:13px;min-width:20px;margin-top:1px;}
+.intro-item strong{color:var(--text);font-weight:500;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px;}
+
+/* Responsive */
+@media(max-width:500px){
+  .main{padding:1.25rem 1rem 3rem;}
+  .ch-title{font-size:22px;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* PYODIDE BANNER */
+#py-banner{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--surface);border-top:1px solid var(--border);padding:.65rem 1.5rem;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text-muted);}
+#py-banner.ready{background:var(--green-dim);border-color:var(--green-border);color:var(--green);}
+#py-banner.hidden{display:none;}
+.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.run-output{background:#070a0f;padding:.75rem 1.25rem;font-family:'DM Mono',monospace;font-size:13px;border-top:1px solid var(--border);white-space:pre-wrap;line-height:1.6;display:none;}
+.run-output.show{display:block;}
+.run-output.ok{color:#8bb5a0;}
+.run-output.err{color:#f87171;}
+.btn-reveal{background:var(--surface2);color:var(--text-muted);border-color:var(--border);font-size:13px;padding:.45rem 1rem;}
+.btn-reveal:hover:not(:disabled){background:var(--surface);color:var(--text);}
+</style>
+</head>
+<body>
+
+<div id="py-banner"><div class="spinner" id="py-spinner"></div><span id="py-msg">Loading Python engine &mdash; takes 10&ndash;15 seconds on first visit&hellip;</span></div>
+
+<div class="header">
+  <div class="logo">PythonQuest <span>Data Analyst Edition</span></div>
+  <div class="prog-wrap" id="prog-wrap" style="display:none;">
+    <div class="prog-track"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="prog-label" id="prog-label">1 / 10</div>
+  </div>
+  <div class="xp-badge" id="xp-badge" style="display:none;">0 XP</div>
+</div>
+
+<div class="main" id="main"></div>
+
+<script>
+// PYODIDE SETUP
+let pyodide = null, pyReady = false;
+async function loadPy(){
+  try{
+    pyodide = await loadPyodide();
+    pyReady = true;
+    const banner = document.getElementById('py-banner');
+    document.getElementById('py-spinner').style.display='none';
+    document.getElementById('py-msg').textContent = '✓ Python engine ready — Shift+Enter to run your code!';
+    banner.classList.add('ready');
+    setTimeout(()=>banner.classList.add('hidden'), 3500);
+  } catch(e){
+    document.getElementById('py-msg').textContent = 'Python engine failed to load. Check your internet connection and refresh.';
+  }
+}
+loadPy();
+
+async function runPython(code){
+  if(!pyReady) return {output:'', error:'Python is still loading — please wait a moment and try again.'};
+  try{
+    const indented = code.split('\n').map(l=>'    '+l).join('\n');
+    const wrapped = `import sys, io\n_out=io.StringIO()\n_err=io.StringIO()\n_oo,_oe=sys.stdout,sys.stderr\nsys.stdout,sys.stderr=_out,_err\ntry:\n${indented}\nexcept Exception as e:\n    print(f"{type(e).__name__}: {e}",file=_err)\nfinally:\n    sys.stdout,sys.stderr=_oo,_oe\n_out.getvalue(),_err.getvalue()`;
+    const res = await pyodide.runPythonAsync(wrapped);
+    const out=res.get(0)||'', err=res.get(1)||'';
+    res.destroy();
+    return {output:out, error:err};
+  } catch(e){
+    const lines=(e.message||String(e)).split('\n');
+    const errLine=lines.find(l=>l.includes('Error:')||l.includes('SyntaxError'))||lines[lines.length-1]||String(e);
+    return {output:'', error:errLine};
+  }
+}
+
+const CHAPTERS = [
+  {
+    concept:"Python & Jupyter Notebooks", time:"~10 min", tag:"Setup",
+    title:"Welcome to the Data Lab",
+    story:`You've just joined <strong>Analytix Ltd</strong> as a Data Analyst apprentice. Your manager, Priya, shows you to your workstation — a laptop with <strong>Jupyter Notebook</strong> open in the browser.\n\n"Everything we do in data starts here," she says. "Python is the language, Jupyter is where we write it. Think of each cell as a sticky note — write some Python, press <em>Shift + Enter</em>, and it runs immediately. The output appears right below."\n\nShe points to a key rule: cells share memory. A variable you create in one cell is available in every cell below it.`,
+    explain:{title:"How Jupyter Notebooks work",body:`A Jupyter Notebook is made of <strong>cells</strong>. Each cell holds Python code. You run a cell with <strong>Shift + Enter</strong> and output appears beneath it.<br><br>Variables created in one cell are available in all later cells — this shared memory is called the <strong>kernel</strong>. The kernel keeps running until you restart it.<br><br><code># This is a comment</code> — Python ignores any line starting with <code>#</code>. Use comments to explain your code.`},
+    code:`<span class="cm"># This is a comment — Python ignores it</span>\n<span class="bi">print</span>(<span class="st">"Hello, Analytix!"</span>)\n<span class="bi">print</span>(<span class="nm">2</span> <span class="op">+</span> <span class="nm">3</span>)\n<span class="bi">print</span>(<span class="nm">10</span> <span class="op">*</span> <span class="nm">4</span>)`,
+    output:`Hello, Analytix!\n5\n40`,
+    mc:{q:`Priya runs a cell containing <code>print(100 / 4)</code>. What appears below the cell?`,choices:["100 / 4","print(100 / 4)","25.0","Nothing — print needs a string"],correct:2,good:`Correct! Python evaluates 100 ÷ 4 = 25.0 (a float) and prints it. The print() function displays whatever you put inside the brackets.`,bad:`Python evaluates the expression first, then print() displays the result. 100 / 4 = 25.0.`},
+    task:`Write two print() statements:\n1. Print your name\n2. Print the result of 365 * 24 (hours in a year)\n\nBonus: add a comment above each line explaining what it does.`,
+    hint:`# Print my name\nprint("Alex")\n\n# Hours in a year\nprint(365 * 24)`,
+    starter:`# Write your two print() statements below\n`
+  },
+  {
+    concept:"Variables & Data Types", time:"~15 min", tag:"Fundamentals",
+    title:"Labelling the Data",
+    story:`Your first task: store some information about the company's top sales rep. "Before we can analyse anything," Priya explains, "we need to hold values in memory. In Python we use <strong>variables</strong> — labelled containers that hold data."\n\nShe writes on the whiteboard: <em>name = "Maya"</em>. "The <strong>=</strong> sign means <em>assign</em> — put the value on the right into the box on the left. It's not the same as equals in maths."`,
+    explain:{title:"The four core data types",body:`<strong>str</strong> — text inside quotes: <code>"hello"</code>, <code>"2024"</code><br><strong>int</strong> — whole numbers: <code>42</code>, <code>-7</code>, <code>1000</code><br><strong>float</strong> — decimal numbers: <code>3.14</code>, <code>99.5</code><br><strong>bool</strong> — only two values: <code>True</code> or <code>False</code><br><br>Use <code>type(x)</code> to check a variable's type. Variable names must start with a letter, use lowercase with underscores: <code>annual_salary</code>.`},
+    code:`analyst_name <span class="op">=</span> <span class="st">"Maya"</span>\nrecords <span class="op">=</span> <span class="nm">1500</span>\navg_salary <span class="op">=</span> <span class="nm">32500.50</span>\nis_complete <span class="op">=</span> <span class="kw">True</span>\n\n<span class="bi">print</span>(analyst_name)\n<span class="bi">print</span>(<span class="fn">type</span>(records))\n<span class="bi">print</span>(<span class="fn">type</span>(avg_salary))`,
+    output:`Maya\n<class 'int'>\n<class 'float'>`,
+    mc:{q:`What is the data type of: <code>score = "95"</code>?`,choices:["int","float","str","bool"],correct:2,good:`Correct! The quotes make it a string — even though 95 looks like a number. <code>"95"</code> ≠ <code>95</code>. Always check for quotes.`,bad:`The quotes are the clue. <code>"95"</code> is a str (string), not an int. Remove the quotes for a number.`},
+    task:`Create four variables to describe yourself:\n• Your name (str)\n• Your age (int)\n• Your height in metres (float)\n• Whether you enjoy data work (bool)\n\nThen print each variable on its own line. Finally, use type() to print the type of your age variable.`,
+    hint:`name = "Alex"\nage = 22\nheight = 1.75\nlikes_data = True\n\nprint(name)\nprint(age)\nprint(height)\nprint(likes_data)\nprint(type(age))`,
+    starter:`# Create your four variables\n\n\n\n\n# Print each one\n\n# Print the type of your age\n`
+  },
+  {
+    concept:"String Operations", time:"~12 min", tag:"Fundamentals",
+    title:"Cleaning the Column Headers",
+    story:`A CSV file arrives with messy column headers — some uppercase, some lowercase, random spaces. "In data work," Priya says, "strings need constant cleaning. Python has a set of built-in string <strong>methods</strong> — actions you can call directly on any piece of text." She also shows you <strong>f-strings</strong>, the cleanest way to build messages that include variable values.`,
+    explain:{title:"Essential string methods & f-strings",body:`<code>.upper()</code> → ALL CAPS<br><code>.lower()</code> → all lowercase<br><code>.strip()</code> → remove whitespace from both ends<br><code>.replace(old, new)</code> → swap characters<br><code>.split(",")</code> → split into a list<br><code>len("hello")</code> → count characters: 5<br><br><strong>f-strings</strong>: put an <code>f</code> before the quote and embed variables in <code>{}</code>:<br><code>f"Hello {name}, you have {count} records"</code>`},
+    code:`col <span class="op">=</span> <span class="st">"  Total Sales  "</span>\nclean <span class="op">=</span> col.<span class="fn">strip</span>().<span class="fn">lower</span>().<span class="fn">replace</span>(<span class="st">" "</span>, <span class="st">"_"</span>)\n<span class="bi">print</span>(clean)\n\nanalyst <span class="op">=</span> <span class="st">"Priya"</span>\nregion <span class="op">=</span> <span class="st">"North"</span>\n<span class="bi">print</span>(<span class="st">f"Report by {analyst} for {region} region"</span>)`,
+    output:`total_sales\nReport by Priya for North region`,
+    mc:{q:`What does <code>"  Hello World  ".strip().upper()</code> return?`,choices:["HELLO WORLD","hello world","Hello World"],correct:0,good:`Correct! strip() removes surrounding spaces first, then upper() capitalises everything. Method chaining runs left to right.`,bad:`Order matters: strip() removes spaces first, then upper() capitalises. The result is "HELLO WORLD" — no surrounding spaces, all caps.`},
+    task:`You have this messy column name:\n<code>column = "  Monthly Revenue  "</code>\n\n1. Clean it to produce "monthly_revenue" (lowercase, no surrounding spaces, underscores instead of spaces)\n2. Store the result in a variable called clean_col\n3. Print using an f-string: "Column ready: monthly_revenue"\n4. Print the length of the cleaned string using len()`,
+    hint:`column = "  Monthly Revenue  "\nclean_col = column.strip().lower().replace(" ", "_")\nprint(f"Column ready: {clean_col}")\nprint(len(clean_col))`,
+    starter:`column = "  Monthly Revenue  "\n\n# Clean the string\n\n# Print using an f-string\n\n# Print the length\n`
+  },
+  {
+    concept:"Lists", time:"~15 min", tag:"Data Structures",
+    title:"The Sales Region List",
+    story:`A colleague emails a list of 12 sales regions to process. "Storing them as separate variables would be chaos," Priya says. "That's what <strong>lists</strong> are for — an ordered, changeable collection of values. One variable holds everything, and you can loop through it, slice it, add to it."`,
+    explain:{title:"Lists: ordered, changeable collections",body:`<code>regions = ["North", "South", "East"]</code><br><br>Indexing starts at <strong>0</strong>: <code>regions[0]</code> → "North"<br>Negative index: <code>regions[-1]</code> → last item<br><code>len(regions)</code> → count of items<br><code>regions[0:2]</code> → slice: items at index 0 and 1<br><code>.append(x)</code> → add to end<br><code>.remove(x)</code> → remove by value<br><code>x in regions</code> → True/False membership check`},
+    code:`regions <span class="op">=</span> [<span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"West"</span>]\n\n<span class="bi">print</span>(regions[<span class="nm">0</span>])        <span class="cm"># North</span>\n<span class="bi">print</span>(regions[<span class="op">-</span><span class="nm">1</span>])       <span class="cm"># West</span>\n<span class="bi">print</span>(<span class="fn">len</span>(regions))     <span class="cm"># 4</span>\n\nregions.<span class="fn">append</span>(<span class="st">"Central"</span>)\n<span class="bi">print</span>(<span class="st">"Central"</span> <span class="kw">in</span> regions)  <span class="cm"># True</span>`,
+    output:`North\nWest\n4\nTrue`,
+    mc:{q:`<code>scores = [88, 72, 95, 60]</code><br>What is <code>scores[2]</code>?`,choices:["72","88","95","60"],correct:2,good:`Correct! Index 2 is the third item — 95. Counting starts at 0: index 0=88, 1=72, 2=95.`,bad:`Remember: index 0=88, index 1=72, index 2=95. Counting always starts at zero in Python.`},
+    task:`Create a list called products containing at least 5 product names.\n\n1. Print the first product\n2. Print the last product using a negative index\n3. Print a slice of the middle 3 products\n4. Add a new product with .append()\n5. Print the total count with len()`,
+    hint:`products = ["Widget", "Gadget", "Donut", "Sprocket", "Gizmo"]\nprint(products[0])\nprint(products[-1])\nprint(products[1:4])\nproducts.append("Thingamajig")\nprint(len(products))`,
+    starter:`# Create your list with 5+ products\nproducts = []\n\n# 1. Print first product\n\n# 2. Print last product (negative index)\n\n# 3. Print middle slice\n\n# 4. Append a new product\n\n# 5. Print length\n`
+  },
+  {
+    concept:"Dictionaries", time:"~15 min", tag:"Data Structures",
+    title:"The Employee Records",
+    story:`HR sends structured data — each employee has a name, department, and salary. "A list would only store the values," Priya says, "but we'd lose track of what each value means. That's where <strong>dictionaries</strong> shine. They store data as key-value pairs — like a row in a spreadsheet where each column has a name."`,
+    explain:{title:"Dictionaries: key-value stores",body:`<code>employee = {"name": "Jo", "salary": 28000}</code><br><br>Access value: <code>employee["name"]</code> → "Jo"<br>Update value: <code>employee["salary"] = 30000</code><br>Add new key: <code>employee["dept"] = "Finance"</code><br>Check key exists: <code>"name" in employee</code> → True<br>All keys: <code>employee.keys()</code><br>All values: <code>employee.values()</code><br>All pairs: <code>employee.items()</code>`},
+    code:`employee <span class="op">=</span> {\n    <span class="st">"name"</span>: <span class="st">"Kofi"</span>,\n    <span class="st">"dept"</span>: <span class="st">"Analytics"</span>,\n    <span class="st">"salary"</span>: <span class="nm">31000</span>\n}\n\n<span class="bi">print</span>(employee[<span class="st">"name"</span>])\nemployee[<span class="st">"salary"</span>] <span class="op">=</span> <span class="nm">33000</span>\nemployee[<span class="st">"location"</span>] <span class="op">=</span> <span class="st">"London"</span>\n<span class="bi">print</span>(employee)`,
+    output:`Kofi\n{'name': 'Kofi', 'dept': 'Analytics', 'salary': 33000, 'location': 'London'}`,
+    mc:{q:`<code>data = {"city": "London", "pop": 9000000}</code><br>How do you access the population?`,choices:['data[0]','data["pop"]','data.get_pop()','data(pop)'],correct:1,good:`Correct! Dictionary values are accessed by their key in square brackets: data["pop"].`,bad:`Dictionaries use key lookup: data["pop"]. Numeric indexes only work on lists.`},
+    task:`Create a dictionary for a product with these keys:\n• "name" (str)\n• "price" (float)\n• "in_stock" (bool)\n• "units" (int)\n\nThen:\n1. Print the product name using its key\n2. Increase the price by £5 and update the dictionary\n3. Print the updated price\n4. Print all the keys using .keys()`,
+    hint:`product = {"name": "Widget", "price": 9.99, "in_stock": True, "units": 250}\nprint(product["name"])\nproduct["price"] = product["price"] + 5\nprint(product["price"])\nprint(product.keys())`,
+    starter:`# Create your product dictionary\nproduct = {}\n\n# 1. Print the name\n\n# 2. Increase price by £5\n\n# 3. Print updated price\n\n# 4. Print all keys\n`
+  },
+  {
+    concept:"Conditionals (if / elif / else)", time:"~15 min", tag:"Logic",
+    title:"The Performance Flag",
+    story:`Priya drops a spreadsheet on your desk. "We need to flag each region's performance — green if they exceeded target, amber if they hit it, red if they missed it. Your code needs to <strong>make decisions</strong>." She sketches out an if/elif/else on the whiteboard. "Python uses <em>indentation</em> — four spaces — to group the code belonging to each branch. No curly braces."`,
+    explain:{title:"if / elif / else — decision making",body:`<code>if condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs when True</code><br><code>elif other_condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs if first was False</code><br><code>else:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs if all above False</code><br><br>Comparison operators: <code>== != > < >= <=</code><br>Logical operators: <code>and</code>&nbsp; <code>or</code>&nbsp; <code>not</code><br><br>Only <strong>one</strong> branch ever runs — the first one whose condition is True.`},
+    code:`sales <span class="op">=</span> <span class="nm">85000</span>\ntarget <span class="op">=</span> <span class="nm">80000</span>\n\n<span class="kw">if</span> sales <span class="op">>=</span> target <span class="op">*</span> <span class="nm">1.1</span>:\n    <span class="bi">print</span>(<span class="st">"GREEN — exceeds target by 10%+"</span>)\n<span class="kw">elif</span> sales <span class="op">>=</span> target:\n    <span class="bi">print</span>(<span class="st">"AMBER — on target"</span>)\n<span class="kw">else</span>:\n    <span class="bi">print</span>(<span class="st">"RED — below target"</span>)`,
+    output:`AMBER — on target`,
+    mc:{q:`<code>x = 15</code><br><code>if x > 20:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("A")</code><br><code>elif x > 10:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("B")</code><br><code>else:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;print("C")</code><br>What prints?`,choices:["A","B","C","A and B"],correct:1,good:`Correct! x=15 fails the first check (not > 20), but passes the second (15 > 10). So "B" prints.`,bad:`x=15: first condition x>20 is False, second x>10 is True — so the elif branch runs and prints "B".`},
+    task:`Write a grade classifier. Create a variable called score and set it to any number.\n\nUse if/elif/else to print:\n• "Distinction" if score >= 80\n• "Merit" if score >= 60\n• "Pass" if score >= 40\n• "Refer" otherwise\n\nThen change your score and run it again to test different branches.`,
+    hint:`score = 72\n\nif score >= 80:\n    print("Distinction")\nelif score >= 60:\n    print("Merit")\nelif score >= 40:\n    print("Pass")\nelse:\n    print("Refer")`,
+    starter:`score = 72  # try changing this number\n\n# Write your if/elif/else below\n`
+  },
+  {
+    concept:"For Loops", time:"~15 min", tag:"Iteration",
+    title:"Processing Every Row",
+    story:`A list of 50 store names needs processing. "You're not writing 50 print statements," Priya says firmly. "A <strong>for loop</strong> runs a block of code once for each item in a collection. It's one of the most important tools in a data analyst's kit — every row in a dataset, every column in a table, every item in a list."`,
+    explain:{title:"Iterating with for loops",body:`<code>for item in collection:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs once per item</code><br><br><code>range(5)</code> → 0, 1, 2, 3, 4<br><code>range(1, 6)</code> → 1, 2, 3, 4, 5<br><code>range(0, 10, 2)</code> → 0, 2, 4, 6, 8 (step of 2)<br><code>enumerate(list)</code> → gives index and value together<br><br>You can loop over lists, strings, dictionaries (.items()), and more.`},
+    code:`stores <span class="op">=</span> [<span class="st">"Birmingham"</span>, <span class="st">"Manchester"</span>, <span class="st">"Leeds"</span>]\n\n<span class="kw">for</span> i, store <span class="kw">in</span> <span class="fn">enumerate</span>(stores, <span class="nm">1</span>):\n    <span class="bi">print</span>(<span class="st">f"{i}. Store: {store}"</span>)\n\n<span class="cm"># Accumulating with a loop</span>\ntotal <span class="op">=</span> <span class="nm">0</span>\n<span class="kw">for</span> n <span class="kw">in</span> [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>]:\n    total <span class="op">+=</span> n\n<span class="bi">print</span>(<span class="st">f"Total: {total}"</span>)`,
+    output:`1. Store: Birmingham\n2. Store: Manchester\n3. Store: Leeds\nTotal: 60`,
+    mc:{q:`<code>total = 0</code><br><code>for n in [10, 20, 30]:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;total = total + n</code><br><code>print(total)</code><br>What prints?`,choices:["10","30","60","[10, 20, 30]"],correct:2,good:`Correct! Each loop adds to total: 0+10=10, 10+20=30, 30+30=60. This pattern — accumulating inside a loop — is used everywhere in data work.`,bad:`The loop accumulates: starts at 0, adds 10→10, adds 20→30, adds 30→60. Prints 60.`},
+    task:`You have monthly sales figures:\n<code>sales = [12000, 15000, 9000, 18000, 21000, 14000]</code>\n\n1. Loop through and print each value formatted as "£12,000" (use an f-string)\n2. Track the running total inside the loop\n3. After the loop, print the total and the average\n\nHint: average = total / len(sales)`,
+    hint:`sales = [12000, 15000, 9000, 18000, 21000, 14000]\ntotal = 0\nfor s in sales:\n    print(f"£{s:,}")\n    total += s\nprint(f"Total: £{total:,}")\nprint(f"Average: £{round(total / len(sales)):,}")`,
+    starter:`sales = [12000, 15000, 9000, 18000, 21000, 14000]\ntotal = 0\n\n# Loop through sales\n# Print each value formatted as £12,000\n# Accumulate the total\n\n\n# Print total and average after the loop\n`
+  },
+  {
+    concept:"While Loops & break/continue", time:"~10 min", tag:"Iteration",
+    title:"The Data Quality Gate",
+    story:`A live data feed keeps sending records until it hits -1, a sentinel value. "We don't know how many records are coming," Priya says, "so a for loop won't do. We need a <strong>while loop</strong> — it keeps running as long as a condition stays True." She adds a warning: "Always make sure something inside the loop eventually makes the condition False. Otherwise it runs forever."`,
+    explain:{title:"While loops, break, and continue",body:`<code>while condition:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# runs until condition is False</code><br><br><code>break</code> — exit the loop immediately<br><code>continue</code> — skip the rest of this iteration, go to next<br><br>Common use in data: reading until an end-of-file marker, retrying until a condition is met, or processing user input. Always ensure the variable in your condition <strong>changes</strong> each iteration.`},
+    code:`records <span class="op">=</span> [<span class="nm">42</span>, <span class="nm">17</span>, <span class="nm">91</span>, <span class="op">-</span><span class="nm">1</span>, <span class="nm">55</span>]\ni <span class="op">=</span> <span class="nm">0</span>\n\n<span class="kw">while</span> i <span class="op"><</span> <span class="fn">len</span>(records):\n    <span class="kw">if</span> records[i] <span class="op">==</span> <span class="op">-</span><span class="nm">1</span>:\n        <span class="bi">print</span>(<span class="st">"End of feed."</span>)\n        <span class="kw">break</span>\n    <span class="bi">print</span>(<span class="st">f"Processing: {records[i]}"</span>)\n    i <span class="op">+=</span> <span class="nm">1</span>`,
+    output:`Processing: 42\nProcessing: 17\nProcessing: 91\nEnd of feed.`,
+    mc:{q:`<code>x = 1</code><br><code>while x < 10:</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;x = x * 2</code><br><code>print(x)</code><br>What prints?`,choices:["8","10","16","The loop runs forever"],correct:2,good:`Correct! x doubles each iteration: 1→2→4→8→16. When x reaches 16, the condition (16 < 10) is False so the loop exits and prints 16.`,bad:`Not quite. x doubles each iteration: 1→2→4→8→16. When x reaches 16, the condition 16 < 10 is False — so the loop stops and print(x) shows 16.`},
+    task:`Write a while loop that:\n1. Starts with count = 1\n2. Prints "Row {count} processed" each iteration\n3. Stops after processing row 6\n4. Prints "All rows done!" after the loop\n\nBonus: Use continue to skip row 4 (don't process it, just move on).`,
+    hint:`count = 1\nwhile count <= 6:\n    print(f"Row {count} processed")\n    count += 1\nprint("All rows done!")\n\n# Bonus: to skip row 4, add inside the loop:\n# if count == 4:\n#     count += 1\n#     continue`,
+    starter:`count = 1\n\n# Write your while loop\n# Remember to increment count each time!\n\n\n# Print completion message\n`
+  },
+  {
+    concept:"Functions", time:"~15 min", tag:"Reusability",
+    title:"The Reusable Formula",
+    story:`You notice you've written the same VAT calculation in four different cells. Priya spots it immediately. "Never repeat yourself — that's how bugs creep in. When you change the rate in one place, you forget the others." She opens a new cell. "Wrap it in a <strong>function</strong>. Write it once, give it a name, call it anywhere. Change it once and everything updates."`,
+    explain:{title:"Defining and calling functions",body:`<code>def function_name(parameter):</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;"""Optional description."""</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;# code block</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;return result</code><br><br><strong>Parameters</strong> are the inputs. <code>return</code> sends a value back to the caller.<br>A function without return gives back <code>None</code>.<br>Multiple parameters: <code>def add(a, b):</code><br>Default parameter: <code>def greet(name="World"):</code> — used if caller doesn't supply one.`},
+    code:`<span class="kw">def</span> <span class="fn">add_vat</span>(price, rate<span class="op">=</span><span class="nm">0.20</span>):\n    <span class="st">"""Add VAT to a price. Default rate is 20%."""</span>\n    <span class="kw">return</span> price <span class="op">*</span> (<span class="nm">1</span> <span class="op">+</span> rate)\n\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">100</span>))         <span class="cm"># 120.0</span>\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">100</span>, <span class="nm">0.05</span>))    <span class="cm"># 105.0</span>\n<span class="bi">print</span>(<span class="fn">add_vat</span>(<span class="nm">250</span>))         <span class="cm"># 300.0</span>`,
+    output:`120.0\n105.0\n300.0`,
+    mc:{q:`<code>def square(n):</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;return n * n</code><br><code>result = square(7)</code><br><code>print(result)</code><br>What prints?`,choices:["n * n","77","49","square(7)"],correct:2,good:`Correct! square(7) runs with n=7 and returns 7*7=49. result stores 49, then print() displays it.`,bad:`The function runs with n=7. It returns n*n = 7*7 = 49. So result=49 and print(result) shows 49.`},
+    task:`Write a function called classify_sales(amount) that:\n• Returns "High" if amount > 50000\n• Returns "Medium" if amount > 20000\n• Returns "Low" otherwise\n\nThen write a second function called sales_report(region, amount) that prints:\n"North: £75,000 — High"\n\nCall sales_report() for at least 3 different regions.`,
+    hint:`def classify_sales(amount):\n    if amount > 50000:\n        return "High"\n    elif amount > 20000:\n        return "Medium"\n    else:\n        return "Low"\n\ndef sales_report(region, amount):\n    label = classify_sales(amount)\n    print(f"{region}: £{amount:,} — {label}")\n\nsales_report("North", 75000)\nsales_report("South", 35000)\nsales_report("East", 12000)`,
+    starter:`# Define classify_sales(amount)\n\n\n\n\n# Define sales_report(region, amount)\n\n\n\n# Call sales_report for 3 regions\n`
+  },
+  {
+    concept:"Putting It All Together", time:"~13 min", tag:"Capstone",
+    title:"Your First Data Pipeline",
+    story:`Priya smiles. "You've covered every fundamental. Now let's build something real." She opens a blank notebook. "In your apprenticeship, you'll write pipelines — code that takes raw data, processes it, and produces a report. Today, you're going to write one from scratch using everything you've learned."`,
+    explain:{title:"A new data structure: list of dictionaries",body:`So far you've used lists of strings and a single dictionary separately. In data work you constantly combine them — a <strong>list where every item is a dictionary</strong>, one row per dict. This is exactly how pandas reads a CSV file.<br><br><code>products = [<br>&nbsp;&nbsp;&nbsp;&nbsp;{"name": "Widget", "price": 9.99},<br>&nbsp;&nbsp;&nbsp;&nbsp;{"name": "Gadget", "price": 24.99},<br>]<br>for row in products:<br>&nbsp;&nbsp;&nbsp;&nbsp;print(row["name"])</code><br><br>In this chapter you will build that pattern step by step, adding one piece at a time.`},
+    code:`sales_data <span class="op">=</span> [\n    {<span class="st">"region"</span>: <span class="st">"North"</span>, <span class="st">"revenue"</span>: <span class="nm">45000</span>},\n    {<span class="st">"region"</span>: <span class="st">"South"</span>, <span class="st">"revenue"</span>: <span class="nm">82000</span>},\n    {<span class="st">"region"</span>: <span class="st">"East"</span>,  <span class="st">"revenue"</span>: <span class="nm">31000</span>},\n]\n\n<span class="kw">def</span> <span class="fn">flag</span>(rev):\n    <span class="kw">return</span> <span class="st">"✅"</span> <span class="kw">if</span> rev <span class="op">>=</span> <span class="nm">50000</span> <span class="kw">else</span> <span class="st">"⚠️"</span>\n\ntotal <span class="op">=</span> <span class="nm">0</span>\n<span class="kw">for</span> row <span class="kw">in</span> sales_data:\n    r, v <span class="op">=</span> row[<span class="st">"region"</span>], row[<span class="st">"revenue"</span>]\n    <span class="bi">print</span>(<span class="st">f"{flag(v)}  {r}: £{v:,}"</span>)\n    total <span class="op">+=</span> v\n<span class="bi">print</span>(<span class="st">f"\\nTotal: £{total:,}"</span>)`,
+    output:`⚠️  North: £45,000\n✅  South: £82,000\n⚠️  East: £31,000\n\nTotal: £158,000`,
+    mc:{q:`In the pipeline, why does South get ✅ but North gets ⚠️?`,choices:["South has more regions","South's revenue (£82,000) is >= £50,000; North's (£45,000) is not","The flag function always returns ✅ for southern regions","The order of the list determines the flag"],correct:1,good:`Exactly right! The flag() function applies a conditional: revenue >= 50000 gets ✅, everything below gets ⚠️. Pure Python logic.`,bad:`It's purely about the number. flag() checks if revenue >= 50000. 82000 passes; 45000 doesn't.`},
+    task:`Build your own complete data pipeline:\n\n1. Create a list of at least 4 dictionaries — each with "product", "units_sold", and "unit_price"\n2. Write a function called revenue(units, price) that returns units * price\n3. Write a function called status(rev) that returns "STAR" if rev > 5000, else "STD"\n4. Loop through your data and print a formatted report line for each product\n5. Print the total revenue at the end\n`,
+    hint:`data = [\n    {"product": "Widget", "units_sold": 150, "unit_price": 12},\n    {"product": "Gadget", "units_sold": 40, "unit_price": 25},\n    {"product": "Donut", "units_sold": 800, "unit_price": 2},\n    {"product": "Sprocket", "units_sold": 20, "unit_price": 300},\n]\n\ndef revenue(units, price):\n    return units * price\n\ndef status(rev):\n    return "STAR" if rev > 5000 else "STD"\n\ntotal = 0\nfor row in data:\n    p = row["product"]\n    u = row["units_sold"]\n    pr = row["unit_price"]\n    rev = revenue(u, pr)\n    print(f"[{status(rev)}] {p} - {u} units @ £{pr} = £{rev:,}")\n    total += rev\nprint(f"\\nTotal revenue: £{total:,}")`,
+    starter:`# The data is provided for you — do not change it\ndata = [\n    {\"product\": \"Widget\", \"units_sold\": 150, \"unit_price\": 12},\n    {\"product\": \"Gadget\", \"units_sold\": 40, \"unit_price\": 25},\n    {\"product\": \"Donut\", \"units_sold\": 800, \"unit_price\": 2},\n    {\"product\": \"Sprocket\", \"units_sold\": 20, \"unit_price\": 300},\n]\n\n# Step 1: print data[0] to see what one row looks like\n\n# Step 2: write a for loop that prints row[\"product\"] for each row\n\n# Step 3: define revenue(units, price) and call it inside the loop\n\n# Step 4: define status(rev) and add it to your print line\n\n# Step 5: add total = 0 before the loop, accumulate, print after\n`
+  }
+];
+
+let ch = 0, xp = 0, mcResults = new Array(CHAPTERS.length).fill(null), nextShown = false;
+
+function qs(id){return document.getElementById(id);}
+
+function showHeader(){
+  qs('prog-wrap').style.display='flex';
+  qs('xp-badge').style.display='block';
+}
+
+function updateProgress(){
+  const pct = Math.round(ch / CHAPTERS.length * 100);
+  qs('prog-bar').style.width = pct + '%';
+  qs('prog-label').textContent = `${Math.min(ch+1, CHAPTERS.length)} / ${CHAPTERS.length}`;
+  qs('xp-badge').textContent = xp + ' XP';
+}
+
+function renderIntro(){
+  qs('main').innerHTML = `
+<div class="intro">
+  <div class="intro-title">Python Quest</div>
+  <div class="intro-sub">Python Fundamentals for Data Analysts. ~2 hours of practical hands-on Python tasks.</div>
+  <div class="intro-list">
+    ${CHAPTERS.map((c,i)=>`<div class="intro-item"><span class="intro-num">${String(i+1).padStart(2,'0')}</span><div><strong>${c.concept}</strong> — ${c.title} <span style="color:var(--text-faint);font-size:13px;">${c.time}</span></div></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" style="font-size:16px;padding:.75rem 2rem;" onclick="startGame()">Begin the course →</button>
+</div>`;
+}
+
+function startGame(){
+  showHeader();
+  renderChapter();
+}
+
+function renderChapter(){
+  nextShown = false;
+  if(ch >= CHAPTERS.length){ renderEnd(); return; }
+  updateProgress();
+  const c = CHAPTERS[ch];
+  const tagColor = {Setup:'pill-blue',Fundamentals:'pill-green','Data Structures':'pill-amber',Logic:'pill-blue',Iteration:'pill-amber',Reusability:'pill-green',Capstone:'pill-green'}[c.tag]||'pill-blue';
+
+  qs('main').innerHTML = `
+<div class="ch-eyebrow">Chapter ${ch+1} of ${CHAPTERS.length}</div>
+<div class="ch-title">${c.title}</div>
+<div class="ch-meta">
+  <span class="pill ${tagColor}">${c.concept}</span>
+  <span class="pill pill-blue" style="background:var(--surface);border-color:var(--border);color:var(--text-muted);">${c.time}</span>
+</div>
+
+<div class="card">
+  <div class="card-label">The story</div>
+  <div class="story-text">${c.story.replace(/\n/g,'<br>')}</div>
+</div>
+
+<div class="card">
+  <div class="card-label">${c.explain.title}</div>
+  <div class="explain-body">${c.explain.body}</div>
+</div>
+
+<div class="card-label" style="margin:.25rem 0 .25rem;">Example</div>
+<div class="jup-cell">
+  <div class="jup-topbar"><div class="jup-dot"></div><span>In [1]:</span></div>
+  <div class="code-area">${c.code}</div>
+  <div class="out-area"><div class="out-label">Out:</div>${c.output}</div>
+</div>
+
+<div class="divider"></div>
+
+<div class="card" id="mc-card">
+  <div class="card-label">Quick check</div>
+  <div class="mc-q">${c.mc.q}</div>
+  <div class="choices" id="mc-choices">
+    ${c.mc.choices.map((ch,i)=>`<button class="choice-btn" onclick="choose(${i})">${ch}</button>`).join('')}
+  </div>
+  <div id="mc-fb"></div>
+  <div id="mc-next"></div>
+</div>
+`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function choose(idx){
+  const c = CHAPTERS[ch];
+  document.querySelectorAll('.choice-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===c.mc.correct) b.classList.add('correct');
+    else if(i===idx) b.classList.add('wrong');
+  });
+  const ok = idx===c.mc.correct;
+  if(ok){xp++;mcResults[ch]=true;}else{mcResults[ch]=false;}
+  updateProgress();
+  qs('mc-fb').innerHTML=`<div class="fb ${ok?'good':'bad'}">${ok?'✓ '+c.mc.good:'✗ '+c.mc.bad}</div>`;
+  qs('mc-next').innerHTML=`<div class="btn-row" style="margin-top:.75rem;"><button class="btn btn-primary" onclick="showCodingTask()">Practice it — write some code →</button></div>`;
+}
+
+function showCodingTask(){
+  const c = CHAPTERS[ch];
+  const taskHtml = `
+<div class="divider"></div>
+<div class="card" id="task-card">
+  <div class="card-label">Code practice</div>
+  <div class="story-text" style="white-space:pre-line;margin-bottom:0;">${c.task}</div>
+</div>
+
+<div class="editor-wrap">
+  <div class="editor-topbar">
+    <div class="editor-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+    <span id="cell-label">Your code &mdash; In [ ]:</span>
+    <span style="color:var(--text-faint);">Shift+Enter to run</span>
+  </div>
+  <textarea class="code-input" id="user-code" spellcheck="false" onkeydown="handleTab(event)">${c.starter}</textarea>
+  <div class="run-output" id="run-output"></div>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-primary" id="run-btn" onclick="runCode()">&#9654; Run code</button>
+  <button class="btn btn-reveal" id="answer-btn" onclick="revealAnswer()">Show example answer</button>
+</div>
+
+<div id="answer-area"></div>
+<div id="next-area"></div>
+`;
+  qs('main').insertAdjacentHTML('beforeend', taskHtml);
+  qs('task-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function handleTab(e){
+  if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart,en=t.selectionEnd;t.value=t.value.substring(0,s)+'    '+t.value.substring(en);t.selectionStart=t.selectionEnd=s+4;}
+  if(e.key==='Enter'&&e.shiftKey){e.preventDefault();const btn=qs('run-btn');if(btn&&!btn.disabled)runCode();}
+}
+
+
+async function runCode(){
+  const code = qs('user-code').value;
+  if(!code.trim()) return;
+  const btn = qs('run-btn'), outEl = qs('run-output'), lbl = qs('cell-label');
+  btn.disabled = true; btn.textContent = 'Running…';
+  if(lbl) lbl.textContent = 'Your code — In [*]:';
+  outEl.className = 'run-output show ok';
+  outEl.textContent = 'Running…';
+
+  const {output, error} = await runPython(code);
+
+  btn.disabled = false; btn.textContent = '▶ Run code';
+  if(lbl) lbl.textContent = 'Your code — In [1]:';
+
+  if(error){
+    outEl.className = 'run-output show err';
+    outEl.textContent = '⚠ ' + error + (output ? '\n' + output : '');
+  } else {
+    outEl.className = 'run-output show ok';
+    outEl.textContent = output || '(code ran — no output. Did you forget print()?)';
+  }
+
+  if(!error && !nextShown){
+    nextShown = true; xp++; updateProgress(); showNextBtn();
+  }
+}
+
+function showNextBtn(){
+  const isLast = ch === CHAPTERS.length - 1;
+  qs('next-area').innerHTML = `<div class="btn-row" style="margin-top:.75rem;">
+    <button class="btn btn-primary" onclick="advance()">${isLast ? 'See your results →' : 'Next chapter →'}</button>
+  </div>`;
+}
+
+function revealAnswer(){
+  const c = CHAPTERS[ch];
+  const ab = qs('answer-btn');
+  if(ab){ ab.disabled = true; ab.textContent = 'Answer shown'; }
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const areaEl = qs('answer-area');
+  if(!areaEl) return;
+  areaEl.innerHTML = `<div class="fb info" style="margin-top:.75rem;">
+    <div style="font-weight:500;margin-bottom:.5rem;">Example answer</div>
+    <div style="font-size:13px;color:var(--blue);margin-bottom:.75rem;">There are often several valid solutions — compare the approach, not just the exact code.</div>
+    <div class="jup-cell">
+      <div class="jup-topbar"><div class="jup-dot"></div><span>Solution:</span></div>
+      <div class="code-area">${esc(c.hint)}</div>
+    </div>
+  </div>`;
+  if(!nextShown){ nextShown = true; xp++; updateProgress(); showNextBtn(); }
+}
+
+function advance(){
+  ch++;
+  renderChapter();
+}
+
+function renderEnd(){
+  const total = CHAPTERS.length * 2;
+  const pct = Math.round(xp/total*100);
+  const grade = pct>=80?'Distinction 🏆':pct>=60?'Merit ⭐':pct>=40?'Pass ✅':'Keep practising 💪';
+  qs('prog-bar').style.width='100%';
+  qs('prog-label').textContent=`Complete`;
+  qs('xp-badge').textContent=xp+' XP';
+
+  qs('main').innerHTML=`
+<div class="end-hero">
+  <div class="end-icon">🎓</div>
+  <div class="end-title">Python Fundamentals Complete!</div>
+  <div class="end-sub">You've worked through all 10 chapters — variables, strings, lists, dictionaries, conditionals, loops, functions, and a full data pipeline. These are the foundations every data analyst needs.</div>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-label">XP EARNED</div><div class="stat-val">${xp} / ${total}</div></div>
+  <div class="stat-card"><div class="stat-label">SCORE</div><div class="stat-val">${pct}%</div></div>
+  <div class="stat-card"><div class="stat-label">GRADE</div><div class="stat-val" style="font-size:18px;">${grade}</div></div>
+  <div class="stat-card"><div class="stat-label">CHAPTERS</div><div class="stat-val">${CHAPTERS.length} / ${CHAPTERS.length}</div></div>
+</div>
+<div class="topic-summary">
+  <div class="card-label" style="margin-bottom:.5rem;">Topics covered</div>
+  ${CHAPTERS.map((c,i)=>`<div class="topic-row"><span class="${mcResults[i]?'tick':'cross'}">${mcResults[i]?'✓':'○'}</span>${c.concept}</div>`).join('')}
+</div>
+<div class="end-btns">
+  <button class="btn btn-secondary" onclick="restart()">Start again</button>
+  <button class="btn btn-primary" onclick="window.open('https://pandas.pydata.org/docs/getting_started/intro_tutorials/index.html','_blank')">Next: start learning pandas →</button>
+</div>
+`;
+}
+
+function restart(){ch=0;xp=0;nextShown=false;mcResults=new Array(CHAPTERS.length).fill(null);renderIntro();}
+
+renderIntro();
+</script>
+</body>
+</html>
