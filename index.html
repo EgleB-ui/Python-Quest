@@ -419,7 +419,7 @@ function renderIntro(){
   <div class="intro-list">
     ${CHAPTERS.map((c,i)=>`<div class="intro-item"><span class="intro-num">${String(i+1).padStart(2,'0')}</span><div><strong>${c.concept}</strong> — ${c.title} <span style="color:var(--text-faint);font-size:13px;">${c.time}</span></div></div>`).join('')}
   </div>
-  <button class="btn btn-primary" style="font-size:16px;padding:.75rem 2rem;" onclick="startGame()">Begin the course →</button>
+  <button class="btn btn-primary" style="font-size:16px;padding:.75rem 2rem;" onclick="startGame()">Start Here →</button>
 </div>`;
 }
 
