@@ -376,7 +376,7 @@ function renderIntro(){
   qs('main').innerHTML = `
 <div class="intro">
   <div class="intro-title">Python Quest</div>
-  <div class="intro-sub">A hands-on Python course for Level 4 Data Analyst apprentices. 10 chapters, ~2 hours, real workplace context.</div>
+  <div class="intro-sub">Python Fundamentals for Data Analysts. ~2 hours of practical hands-on Python tasks.</div>
   <div class="intro-list">
     ${CHAPTERS.map((c,i)=>`<div class="intro-item"><span class="intro-num">${String(i+1).padStart(2,'0')}</span><div><strong>${c.concept}</strong> — ${c.title} <span style="color:var(--text-faint);font-size:13px;">${c.time}</span></div></div>`).join('')}
   </div>
